@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
@@ -14,7 +15,7 @@ import codes.blitz.game.message.GameMessage;
 import codes.blitz.game.message.Question;
 import codes.blitz.game.message.Totem;
 import codes.blitz.game.message.TotemAnswer;
-// import codes.blitz.game.message.TotemQuestion;
+import codes.blitz.game.message.TotemQuestion;
 import codes.blitz.game.serialization.JsonMapperSingleton;
 
 public class Solver {
@@ -26,11 +27,11 @@ public class Solver {
     // throughout the challenge.
     I = List.of(new CoordinatePair(0, 0), new CoordinatePair(1, 0), new CoordinatePair(2, 0), new CoordinatePair(3, 0));
     L = List.of(new CoordinatePair(0, 2), new CoordinatePair(0, 1), new CoordinatePair(0, 0), new CoordinatePair(1, 0));
-    J = List.of(new CoordinatePair(0, 1), new CoordinatePair(0, 0), new CoordinatePair(1, 0), new CoordinatePair(0, 2));
+    J = List.of(new CoordinatePair(1, 1), new CoordinatePair(0, 0), new CoordinatePair(1, 0), new CoordinatePair(1, 2));
     T = List.of(new CoordinatePair(0, 0), new CoordinatePair(1, 0), new CoordinatePair(2, 0), new CoordinatePair(1, 1));
     Z = List.of(new CoordinatePair(0, 1), new CoordinatePair(1, 1), new CoordinatePair(1, 0), new CoordinatePair(2, 0));
-    S = List.of(new CoordinatePair(0, 0), new CoordinatePair(0, 1), new CoordinatePair(1, 1), new CoordinatePair(2, 1));
-    O = List.of(new CoordinatePair(1, 0), new CoordinatePair(1, 1), new CoordinatePair(0, 0), new CoordinatePair(1, 0));
+    S = List.of(new CoordinatePair(0, 0), new CoordinatePair(1, 0), new CoordinatePair(1, 1), new CoordinatePair(2, 1));
+    O = List.of(new CoordinatePair(1, 0), new CoordinatePair(1, 1), new CoordinatePair(0, 0), new CoordinatePair(0, 1));
 
   }
 
@@ -39,6 +40,7 @@ public class Solver {
    * you can do better ;)
    */
   public Answer getAnswer(GameMessage gameMessage) throws JsonProcessingException {
+    // Question question = new Question(List.of(new TotemQuestion(Totem.I),new TotemQuestion(Totem.J),new TotemQuestion(Totem.L),new TotemQuestion(Totem.Z),new TotemQuestion(Totem.S),new TotemQuestion(Totem.O),new TotemQuestion(Totem.T)));
     Question question = gameMessage.payload();
     System.out.println("Received Question: " + jsonMapper.writeValueAsString(question));
     // var totems = List.of(new TotemAnswer(Totem.I, List.of(new CoordinatePair(0,
@@ -91,8 +93,8 @@ public class Solver {
             new CoordinatePair(0, 0));
         totemForm = Totem.O;
       }
-
-      currentTotems = currentTotems.stream().map(cord -> new CoordinatePair(cord.x(), cord.y() + height)).collect(Collectors.toList());
+      final int temp = height;
+      currentTotems = currentTotems.stream().map(cord -> new CoordinatePair(cord.x(), cord.y() + temp)).collect(Collectors.toList());
 
       totems.add(new TotemAnswer(totemForm, currentTotems));
       
@@ -104,7 +106,7 @@ public class Solver {
         height += 3;
         break;
       case "J":
-        height += 2;
+        height += 3;
         break;
       case "Z":
         height += 2;
